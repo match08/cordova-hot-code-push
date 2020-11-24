@@ -151,7 +151,12 @@
                                                                    srcDirURL:newAppConfig.contentConfig.contentURL
                                                                    dstDirURL:_pluginFiles.downloadFolder
                                                               requestHeaders:_requestHeaders];
-    [downloader startDownloadWithCompletionBlock:^(NSError * error) {
+    
+    [downloader startDownloadWithCompletionBlock:^( NSUInteger progress, NSUInteger total ){
+        
+        [self notifyUpdateDownloadProgress:progress:total];
+        
+    }:^(NSError * error) {
         if (error) {
             // remove new release folder
             [[NSFileManager defaultManager] removeItemAtURL:_pluginFiles.contentFolder error:nil];
@@ -258,6 +263,24 @@
                                                  applicationConfig:config
                                                             taskId:self.workerId
                                                              error:error];
+    
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+/**
+ *  Send notification that update is loading.
+ *
+ *  @param downloading
+ */
+- (void)notifyUpdateDownloadProgress:(NSUInteger)progress :(NSUInteger)total
+{
+    if (_complitionBlock) {
+        _complitionBlock();
+    }
+    NSDictionary *taskDetails = @{@"progress":  [NSString stringWithFormat: @"%lu", (unsigned long)progress], @"total": [NSString stringWithFormat: @"%lu", (unsigned long)total]};
+ 
+    NSNotification *notification = [HCPEvents notificationWithName:kHCPUpdateDownloadProgressEvent
+                                                 taskId:self.workerId
+                                                 taskDetails:taskDetails];
     
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }

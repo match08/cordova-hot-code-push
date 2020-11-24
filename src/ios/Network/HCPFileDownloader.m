@@ -16,6 +16,7 @@
     NSDictionary *_headers;
     
     NSURLSession *_session;
+    HCPFileDownloadProgressBlock _progressHandler;
     HCPFileDownloadCompletionBlock _complitionHandler;
     NSUInteger _downloadCounter;
 }
@@ -52,8 +53,9 @@ static NSUInteger const TIMEOUT = 300;
     return [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil];
 }
 
-- (void)startDownloadWithCompletionBlock:(HCPFileDownloadCompletionBlock)block {
-    _complitionHandler = block;
+- (void)startDownloadWithCompletionBlock:(HCPFileDownloadProgressBlock)progressBlock:(HCPFileDownloadCompletionBlock)completionBlock {
+    _progressHandler = progressBlock;
+    _complitionHandler = completionBlock;
     _downloadCounter = 0;
     _session = [self sessionWithHeaders:_headers];
     
@@ -79,6 +81,7 @@ static NSUInteger const TIMEOUT = 300;
     }
     
     _downloadCounter++;
+    _progressHandler(_downloadCounter, _filesList.count);
     if (_downloadCounter >= _filesList.count) {
         [_session finishTasksAndInvalidate];
         _session = nil;

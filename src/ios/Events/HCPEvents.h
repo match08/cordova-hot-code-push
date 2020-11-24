@@ -8,12 +8,16 @@
 #import "HCPApplicationConfig.h"
 
 /**
+ *  Event is dispatched update progress has happened during the update download.
+ */
+extern NSString *const kHCPUpdateDownloadProgressEvent;
+/**
  *  Event is dispatched when some error has happened during the update download.
  */
 extern NSString *const kHCPUpdateDownloadErrorEvent;
 
 /**
- *  Event is dispathed when there is nothing new to download from the server. 
+ *  Event is dispathed when there is nothing new to download from the server.
  *  Web content is up-to-date.
  */
 extern NSString *const kHCPNothingToUpdateEvent;
@@ -74,6 +78,8 @@ extern NSString *const kHCPEventUserInfoTaskIdKey;
 extern NSString *const kHCPEventUserInfoApplicationConfigKey;
 
 
+extern NSString *const kHCPEventUserInfoTaskDetailsKey;
+
 /**
  *  Helper class tor create plugin specific notifications about work process (download or installation).
  */
@@ -92,6 +98,7 @@ extern NSString *const kHCPEventUserInfoApplicationConfigKey;
  */
 + (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId error:(NSError *)error;
 
++ (NSNotification *)notificationWithName:(NSString *)name taskId:(NSString *)taskId taskDetails:(NSDictionary*)taskDetails;
 /**
  *  Create instance of the NSNotification.
  *  Object is then dispatched through the NSNotificationCenter.

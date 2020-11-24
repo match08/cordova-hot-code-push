@@ -8,6 +8,7 @@
 
 #pragma mark Event names declaration
 
+NSString *const kHCPUpdateDownloadProgressEvent = @"chcp_updateLoadProgress";
 NSString *const kHCPUpdateDownloadErrorEvent = @"chcp_updateLoadFailed";
 NSString *const kHCPNothingToUpdateEvent = @"chcp_nothingToUpdate";
 NSString *const kHCPUpdateIsReadyForInstallationEvent = @"chcp_updateIsReadyToInstall";
@@ -21,6 +22,7 @@ NSString *const kHCPBundleAssetsInstallationErrorEvent = @"chcp_assetsInstallati
 
 NSString *const kHCPEventUserInfoErrorKey = @"error";
 NSString *const kHCPEventUserInfoTaskIdKey = @"taskId";
+NSString *const kHCPEventUserInfoTaskDetailsKey = @"taskDetails";
 NSString *const kHCPEventUserInfoApplicationConfigKey = @"appConfig";
 
 @implementation HCPEvents
@@ -28,10 +30,12 @@ NSString *const kHCPEventUserInfoApplicationConfigKey = @"appConfig";
 #pragma mark Public API
 
 + (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId {
-    return [HCPEvents notificationWithName:name applicationConfig:appConfig taskId:taskId error:nil];
+    return [HCPEvents notificationWithName:name applicationConfig:appConfig taskId:taskId error:nil taskDetails:nil];
 }
-
-+ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId error:(NSError *)error {
++ (NSNotification *)notificationWithName:(NSString *)name taskId:(NSString *)taskId taskDetails:(NSMutableDictionary*)taskDetails {
+    return [HCPEvents notificationWithName:name applicationConfig:nil taskId:taskId error:nil taskDetails:taskDetails];
+}
++ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId error:(NSError *)error taskDetails:(NSDictionary *)taskDetails {
     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
     if (appConfig) {
         userInfo[kHCPEventUserInfoApplicationConfigKey] = appConfig;
@@ -43,6 +47,10 @@ NSString *const kHCPEventUserInfoApplicationConfigKey = @"appConfig";
     
     if (error) {
         userInfo[kHCPEventUserInfoErrorKey] = error;
+    }
+    if(taskDetails)
+    {
+        userInfo[kHCPEventUserInfoTaskDetailsKey] = taskDetails;
     }
     return [NSNotification notificationWithName:name object:nil userInfo:userInfo];
 }

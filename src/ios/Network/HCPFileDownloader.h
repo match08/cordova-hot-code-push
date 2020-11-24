@@ -7,6 +7,13 @@
 #import <Foundation/Foundation.h>
 
 /**
+ *  Complition block for file download progress.
+ *
+ *  @param error holds information about occured error; <code>nil</code> if everything is fine
+ *
+ */
+typedef void (^HCPFileDownloadProgressBlock)(NSUInteger progress, NSUInteger total);
+/**
  *  Complition block for file download process.
  *
  *  @param error holds information about occured error; <code>nil</code> if everything is fine
@@ -33,9 +40,9 @@ typedef void (^HCPFileDownloadCompletionBlock)(NSError *error);
 
 /**
  * Start download task.
- * 
+ * @param block progress block
  * @param block complition block
  */
-- (void)startDownloadWithCompletionBlock:(HCPFileDownloadCompletionBlock)block;
+- (void)startDownloadWithCompletionBlock:(HCPFileDownloadProgressBlock)progressBlock:(HCPFileDownloadCompletionBlock)completionBlock;
 
 @end

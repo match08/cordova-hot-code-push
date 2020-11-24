@@ -439,6 +439,11 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
     
     // update download events
     [notificationCenter addObserver:self
+                           selector:@selector(onUpdateDownloadProgressEvent:)
+                               name:kHCPUpdateDownloadProgressEvent
+                             object:nil];
+    
+    [notificationCenter addObserver:self
                            selector:@selector(onUpdateDownloadErrorEvent:)
                                name:kHCPUpdateDownloadErrorEvent
                              object:nil];
@@ -573,7 +578,26 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
     // send notification to the default callback
     [self invokeDefaultCallbackWithMessage:pluginResult];
 }
-
+/**
+ *  Method is called when update is loaded and ready for installation.
+ *
+ *  @param notification captured notification with event details
+ */
+- (void)onUpdateDownloadProgressEvent:(NSNotification *)notification {
+    
+    NSDictionary *taskDetails = notification.userInfo[kHCPEventUserInfoTaskDetailsKey];
+    NSLog(@"Update is download Progress: %@/%@",  taskDetails[@"progress"], taskDetails[@"total"]);
+    
+    // send notification to the associated callback
+    CDVPluginResult *pluginResult = [CDVPluginResult pluginResultForNotification:notification];
+    if (_downloadCallback) {
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:_downloadCallback];
+    }
+    
+    // send notification to the default callback
+    [self invokeDefaultCallbackWithMessage:pluginResult];
+    
+}
 /**
  *  Method is called when update is loaded and ready for installation.
  *

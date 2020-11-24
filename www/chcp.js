@@ -130,7 +130,10 @@ function broadcastEventFromNative(nativeMessage) {
   if (nativeMessage.error != null) {
     params.error = nativeMessage.error;
   }
-
+  if (nativeMessage.details != null) {
+    params.details = nativeMessage.details;
+  }
+  // console.log('nativeMessage=====:'+ JSON.stringify(nativeMessage));
   var chcpEvent = new CustomEvent(nativeMessage.action, {
     'detail': params
   });
@@ -179,6 +182,7 @@ var chcp = {
 
     NOTHING_TO_UPDATE: 'chcp_nothingToUpdate',
     UPDATE_LOAD_FAILED: 'chcp_updateLoadFailed',
+    UPDATE_LOAD_PROGRESS: "chcp_updateLoadProgress",
     UPDATE_IS_READY_TO_INSTALL: 'chcp_updateIsReadyToInstall',
 
     BEFORE_UPDATE_INSTALLATION: 'chcp_beforeInstall',

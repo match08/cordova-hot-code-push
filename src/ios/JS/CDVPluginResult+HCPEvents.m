@@ -15,6 +15,7 @@ static NSString *const ACTION_KEY = @"action";
 
 static NSString *const DATA_KEY = @"data";
 static NSString *const DATA_USER_INFO_CONFIG = @"config";
+static NSString *const DATA_USER_INFO_DETAILS = @"details";
 
 static NSString *const ERROR_KEY = @"error";
 static NSString *const ERROR_USER_INFO_CODE = @"code";
@@ -27,9 +28,10 @@ static NSString *const ERROR_USER_INFO_DESCRIPTION = @"description";
 + (CDVPluginResult *)pluginResultForNotification:(NSNotification *)notification {
     HCPApplicationConfig *appConfig = notification.userInfo[kHCPEventUserInfoApplicationConfigKey];
     NSError *error = notification.userInfo[kHCPEventUserInfoErrorKey];
+    NSError *details = notification.userInfo[kHCPEventUserInfoTaskDetailsKey];
     NSString *action = notification.name;
     
-    return [CDVPluginResult pluginResultWithActionName:action applicationConfig:appConfig error:error];
+    return [CDVPluginResult pluginResultWithActionName:action applicationConfig:appConfig error:error details:details];
 }
 
 + (CDVPluginResult *)pluginResultWithActionName:(NSString *)action applicationConfig:(HCPApplicationConfig *)appConfig error:(NSError *)error {
@@ -39,6 +41,20 @@ static NSString *const ERROR_USER_INFO_DESCRIPTION = @"description";
     }
     
     return [self pluginResultWithActionName:action data:data error:error];
+}
+
++ (CDVPluginResult *)pluginResultWithActionName:(NSString *)action applicationConfig:(HCPApplicationConfig *)appConfig error:(NSError *)error details:(NSDictionary*)details
+{
+    NSDictionary *outData = nil;
+    if (appConfig) {
+        outData = @{DATA_USER_INFO_CONFIG: [appConfig toJson], DATA_USER_INFO_DETAILS:details};
+    }
+    else if(details)
+    {
+        outData = @{DATA_USER_INFO_DETAILS:details};
+    }
+    
+    return [self pluginResultWithActionName:action data:outData error:error];
 }
 
 + (CDVPluginResult *)pluginResultWithActionName:(NSString *)action data:(NSDictionary *)data error:(NSError *)error {

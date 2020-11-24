@@ -26,6 +26,9 @@
 
 + (CDVPluginResult *)pluginResultWithActionName:(NSString *)action applicationConfig:(HCPApplicationConfig *)appConfig error:(NSError *)error;
 
++ (CDVPluginResult *)pluginResultWithActionName:(NSString *)action applicationConfig:(HCPApplicationConfig *)appConfig details:(NSDictionary *)details;
+
+
 /**
  *  Construct plugin result.
  *

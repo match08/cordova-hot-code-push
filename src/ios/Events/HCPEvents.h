@@ -78,7 +78,7 @@ extern NSString *const kHCPEventUserInfoTaskIdKey;
 extern NSString *const kHCPEventUserInfoApplicationConfigKey;
 
 
-extern NSString *const kHCPEventUserInfoTaskDetailsKey;
+extern NSString *const kHCPEventUserInfoTaskDetailKey;
 
 /**
  *  Helper class tor create plugin specific notifications about work process (download or installation).
@@ -98,7 +98,7 @@ extern NSString *const kHCPEventUserInfoTaskDetailsKey;
  */
 + (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId error:(NSError *)error;
 
-+ (NSNotification *)notificationWithName:(NSString *)name taskId:(NSString *)taskId taskDetails:(NSDictionary*)taskDetails;
++ (NSNotification *)notificationWithName:(NSString *)name taskId:(NSString *)taskId taskDetail:(NSDictionary*)taskDetail;
 /**
  *  Create instance of the NSNotification.
  *  Object is then dispatched through the NSNotificationCenter.

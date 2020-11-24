@@ -276,11 +276,11 @@
     if (_complitionBlock) {
         _complitionBlock();
     }
-    NSDictionary *taskDetails = @{@"progress":  [NSString stringWithFormat: @"%lu", (unsigned long)progress], @"total": [NSString stringWithFormat: @"%lu", (unsigned long)total]};
+    NSDictionary *taskDetail = @{@"downloadDetail":@{@"progress":  [NSString stringWithFormat: @"%lu", (unsigned long)progress], @"total": [NSString stringWithFormat: @"%lu", (unsigned long)total]}};
  
     NSNotification *notification = [HCPEvents notificationWithName:kHCPUpdateDownloadProgressEvent
                                                  taskId:self.workerId
-                                                 taskDetails:taskDetails];
+                                                 taskDetail:taskDetail];
     
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }

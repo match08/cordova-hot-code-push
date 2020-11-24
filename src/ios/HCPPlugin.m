@@ -585,9 +585,12 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
  */
 - (void)onUpdateDownloadProgressEvent:(NSNotification *)notification {
     
-    NSDictionary *taskDetails = notification.userInfo[kHCPEventUserInfoTaskDetailsKey];
-    NSLog(@"Update is download Progress: %@/%@",  taskDetails[@"progress"], taskDetails[@"total"]);
-    
+    NSDictionary *taskDetail = notification.userInfo[kHCPEventUserInfoTaskDetailKey];
+    if([taskDetail objectForKey:@"downloadDetail"])
+    {
+        NSLog(@"Update is download Progress: %@/%@",  taskDetail[@"downloadDetail"][@"progress"], taskDetail[@"downloadDetail"][@"total"]);
+    }
+ 
     // send notification to the associated callback
     CDVPluginResult *pluginResult = [CDVPluginResult pluginResultForNotification:notification];
     if (_downloadCallback) {

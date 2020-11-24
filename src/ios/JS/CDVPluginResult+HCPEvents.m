@@ -15,7 +15,7 @@ static NSString *const ACTION_KEY = @"action";
 
 static NSString *const DATA_KEY = @"data";
 static NSString *const DATA_USER_INFO_CONFIG = @"config";
-static NSString *const DATA_USER_INFO_DETAILS = @"details";
+static NSString *const DATA_USER_INFO_DOWNLOAD_DETAIL = @"downloadDetail";
 
 static NSString *const ERROR_KEY = @"error";
 static NSString *const ERROR_USER_INFO_CODE = @"code";
@@ -28,10 +28,10 @@ static NSString *const ERROR_USER_INFO_DESCRIPTION = @"description";
 + (CDVPluginResult *)pluginResultForNotification:(NSNotification *)notification {
     HCPApplicationConfig *appConfig = notification.userInfo[kHCPEventUserInfoApplicationConfigKey];
     NSError *error = notification.userInfo[kHCPEventUserInfoErrorKey];
-    NSError *details = notification.userInfo[kHCPEventUserInfoTaskDetailsKey];
+    NSDictionary *detail = notification.userInfo[kHCPEventUserInfoTaskDetailKey];
     NSString *action = notification.name;
     
-    return [CDVPluginResult pluginResultWithActionName:action applicationConfig:appConfig error:error details:details];
+    return [CDVPluginResult pluginResultWithActionName:action applicationConfig:appConfig error:error detail:detail];
 }
 
 + (CDVPluginResult *)pluginResultWithActionName:(NSString *)action applicationConfig:(HCPApplicationConfig *)appConfig error:(NSError *)error {
@@ -43,15 +43,22 @@ static NSString *const ERROR_USER_INFO_DESCRIPTION = @"description";
     return [self pluginResultWithActionName:action data:data error:error];
 }
 
-+ (CDVPluginResult *)pluginResultWithActionName:(NSString *)action applicationConfig:(HCPApplicationConfig *)appConfig error:(NSError *)error details:(NSDictionary*)details
++ (CDVPluginResult *)pluginResultWithActionName:(NSString *)action applicationConfig:(HCPApplicationConfig *)appConfig error:(NSError *)error detail:(NSDictionary*)detail
 {
     NSDictionary *outData = nil;
     if (appConfig) {
-        outData = @{DATA_USER_INFO_CONFIG: [appConfig toJson], DATA_USER_INFO_DETAILS:details};
+        if(detail)
+        {
+            outData = @{DATA_USER_INFO_CONFIG: [appConfig toJson], DATA_USER_INFO_DOWNLOAD_DETAIL:detail};
+        }
+        else
+        {
+            outData = @{DATA_USER_INFO_CONFIG: [appConfig toJson]};
+        }
     }
-    else if(details)
+    else if(detail)
     {
-        outData = @{DATA_USER_INFO_DETAILS:details};
+        outData = @{DATA_USER_INFO_DOWNLOAD_DETAIL:detail};
     }
     
     return [self pluginResultWithActionName:action data:outData error:error];

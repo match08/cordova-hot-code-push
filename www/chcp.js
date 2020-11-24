@@ -130,8 +130,8 @@ function broadcastEventFromNative(nativeMessage) {
   if (nativeMessage.error != null) {
     params.error = nativeMessage.error;
   }
-  if (nativeMessage.details != null) {
-    params.details = nativeMessage.details;
+  if (nativeMessage.data != null) {
+    params.data = nativeMessage.data;
   }
   // console.log('nativeMessage=====:'+ JSON.stringify(nativeMessage));
   var chcpEvent = new CustomEvent(nativeMessage.action, {

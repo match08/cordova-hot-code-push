@@ -586,9 +586,9 @@ static NSString *const DEFAULT_STARTING_PAGE = @"index.html";
 - (void)onUpdateDownloadProgressEvent:(NSNotification *)notification {
     
     NSDictionary *taskDetail = notification.userInfo[kHCPEventUserInfoTaskDetailKey];
-    if([taskDetail objectForKey:@"downloadDetail"])
+    if([taskDetail objectForKey:@"downloadTotal"])
     {
-        NSLog(@"Update is download Progress: %@/%@",  taskDetail[@"downloadDetail"][@"progress"], taskDetail[@"downloadDetail"][@"total"]);
+        NSLog(@"Update is download Progress: %@/%@",  taskDetail[@"downloadProgress"], taskDetail[@"downloadTotal"]);
     }
  
     // send notification to the associated callback

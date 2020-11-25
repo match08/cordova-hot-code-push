@@ -15,7 +15,7 @@ static NSString *const ACTION_KEY = @"action";
 
 static NSString *const DATA_KEY = @"data";
 static NSString *const DATA_USER_INFO_CONFIG = @"config";
-static NSString *const DATA_USER_INFO_DOWNLOAD_DETAIL = @"downloadDetail";
+static NSString *const DATA_USER_INFO_TASK_DETAIL = @"taskDetail";
 
 static NSString *const ERROR_KEY = @"error";
 static NSString *const ERROR_USER_INFO_CODE = @"code";
@@ -49,7 +49,8 @@ static NSString *const ERROR_USER_INFO_DESCRIPTION = @"description";
     if (appConfig) {
         if(detail)
         {
-            outData = @{DATA_USER_INFO_CONFIG: [appConfig toJson], DATA_USER_INFO_DOWNLOAD_DETAIL:detail};
+            NSMutableDictionary * data = [[NSMutableDictionary alloc] initWithDictionary:@{DATA_USER_INFO_CONFIG: [appConfig toJson]}];
+            [data addEntriesFromDictionary:outData];
         }
         else
         {
@@ -58,7 +59,7 @@ static NSString *const ERROR_USER_INFO_DESCRIPTION = @"description";
     }
     else if(detail)
     {
-        outData = @{DATA_USER_INFO_DOWNLOAD_DETAIL:detail};
+        outData = @{DATA_USER_INFO_TASK_DETAIL:detail};
     }
     
     return [self pluginResultWithActionName:action data:outData error:error];

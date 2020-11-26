@@ -28,6 +28,7 @@ public class PluginResultHelper {
             public static final String ACTION = "action";
             public static final String ERROR = "error";
             public static final String DATA = "data";
+//            public static final String taskDetail = "taskDetail";
         }
 
         private static class Error {
@@ -81,7 +82,13 @@ public class PluginResultHelper {
                 continue;
             }
 
-            dataNode.set(entry.getKey(), factory.textNode(value.toString()));
+            if ((value instanceof String) || (value instanceof Integer) || (value instanceof Float) || (value instanceof Double)|| (value instanceof Long)) {
+              dataNode.set(entry.getKey(), factory.textNode(value.toString()));
+            }
+            else
+            {
+              dataNode.set(entry.getKey(), factory.pojoNode(value));
+            }
         }
 
         return dataNode;

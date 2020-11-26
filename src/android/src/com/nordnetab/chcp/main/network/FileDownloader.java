@@ -26,8 +26,13 @@ import java.util.Map;
  * <p/>
  * Helper class to download files.
  */
+
+
 public class FileDownloader {
 
+    public static interface DownLoadCallBack{
+        void onProgress(int progress, int total);
+    }
     /**
      * Download list of files.
      * Full url to the file is constructed from the contentFolderUrl and ManifestFile#hash (relative path).
@@ -44,11 +49,18 @@ public class FileDownloader {
     public static void downloadFiles(final String downloadFolder,
                                      final String contentFolderUrl,
                                      final List<ManifestFile> files,
-                                     final Map<String, String> requestHeaders) throws Exception {
+                                     final Map<String, String> requestHeaders, DownLoadCallBack callBack) throws Exception {
+        final int size = files.size();
+        int index = 0;
         for (ManifestFile file : files) {
             String fileUrl = URLUtility.construct(contentFolderUrl, file.name);
             String filePath = Paths.get(downloadFolder, file.name);
             download(fileUrl, filePath, file.hash, requestHeaders);
+            if(callBack != null)
+            {
+                index++;
+                callBack.onProgress(index, size);
+            }
         }
     }
 

@@ -1,10 +1,12 @@
 package com.nordnetab.chcp.main.events;
 
 import com.nordnetab.chcp.main.config.ApplicationConfig;
+import com.nordnetab.chcp.main.config.DownLoadEventData;
 import com.nordnetab.chcp.main.model.ChcpError;
 
 import java.util.Map;
-
+import org.json.JSONObject;
+import org.json.JSONException;
 /**
  * Created by Nikolay Demyankov on 28.08.15.
  * <p/>
@@ -17,7 +19,7 @@ import java.util.Map;
 public class WorkerEvent extends PluginEventImpl {
 
     private static final String CONFIG_KEY = "config";
-
+    private static final String TASK_DETAIL_KEY = "taskDetail";
     /**
      * Class constructor
      *
@@ -34,6 +36,15 @@ public class WorkerEvent extends PluginEventImpl {
             data().put(CONFIG_KEY, appConfig);
         }
     }
+    protected WorkerEvent(String eventName, DownLoadEventData downloadEventData ) {
+        super(eventName, null);
+      
+        if(downloadEventData != null) 
+        {
+          data().put(TASK_DETAIL_KEY, downloadEventData);
+        }
+        
+    }
 
     /**
      * Getter for application config, attached to this event.
@@ -48,5 +59,20 @@ public class WorkerEvent extends PluginEventImpl {
         }
 
         return (ApplicationConfig) eventData.get(CONFIG_KEY);
+    }
+
+     /**
+     * Getter for application task detail, attached to this event.
+     * This task detail was used to perform download task work.
+     *
+     * @return task detail
+     */
+    public DownLoadEventData downLoadEventData() {
+        final Map<String, Object> eventData = data();
+        if (!eventData.containsKey(TASK_DETAIL_KEY)) {
+          return null;
+        }
+ 
+        return (DownLoadEventData) eventData.get(TASK_DETAIL_KEY);
     }
 }

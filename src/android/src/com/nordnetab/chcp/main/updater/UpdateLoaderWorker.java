@@ -6,8 +6,10 @@ import android.util.Log;
 import com.nordnetab.chcp.main.config.ApplicationConfig;
 import com.nordnetab.chcp.main.config.ContentConfig;
 import com.nordnetab.chcp.main.config.ContentManifest;
+import com.nordnetab.chcp.main.config.DownLoadEventData;
 import com.nordnetab.chcp.main.events.NothingToUpdateEvent;
 import com.nordnetab.chcp.main.events.UpdateDownloadErrorEvent;
+import com.nordnetab.chcp.main.events.UpdateDownloadProgressEvent;
 import com.nordnetab.chcp.main.events.UpdateIsReadyToInstallEvent;
 import com.nordnetab.chcp.main.events.WorkerEvent;
 import com.nordnetab.chcp.main.model.ChcpError;
@@ -24,8 +26,11 @@ import com.nordnetab.chcp.main.storage.IObjectFileStorage;
 import com.nordnetab.chcp.main.utils.FilesUtility;
 import com.nordnetab.chcp.main.utils.URLUtility;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Created by Nikolay Demyankov on 28.07.15.
@@ -219,7 +224,19 @@ class UpdateLoaderWorker implements WorkerTask {
         final List<ManifestFile> downloadFiles = diff.getUpdateFiles();
         boolean isFinishedWithSuccess = true;
         try {
-            FileDownloader.downloadFiles(filesStructure.getDownloadFolder(), contentUrl, downloadFiles, requestHeaders);
+            FileDownloader.downloadFiles(filesStructure.getDownloadFolder(), contentUrl, downloadFiles, requestHeaders, new FileDownloader.DownLoadCallBack(){
+                @Override
+                public void onProgress(int progress, int total) {
+                    DownLoadEventData data = new DownLoadEventData();
+                    
+                    data.setDownloadProgress(progress);
+                    data.setDownloadTotal(total);
+
+                    setDownloadProgressResult(data);
+                     // dispatch resulting event
+                    EventBus.getDefault().post(result());
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
             isFinishedWithSuccess = false;
@@ -239,6 +256,10 @@ class UpdateLoaderWorker implements WorkerTask {
 
     private void setErrorResult(final ChcpError error, final ApplicationConfig newAppConfig) {
         resultEvent = new UpdateDownloadErrorEvent(error, newAppConfig);
+    }
+
+    private void setDownloadProgressResult(final DownLoadEventData downLoadEventData) {
+        resultEvent = new UpdateDownloadProgressEvent(downLoadEventData);
     }
 
     private void setSuccessResult(final ApplicationConfig newAppConfig) {

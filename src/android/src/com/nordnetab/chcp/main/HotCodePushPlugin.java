@@ -10,6 +10,7 @@ import android.util.Log;
 import com.nordnetab.chcp.main.config.ApplicationConfig;
 import com.nordnetab.chcp.main.config.ChcpXmlConfig;
 import com.nordnetab.chcp.main.config.ContentConfig;
+import com.nordnetab.chcp.main.config.DownLoadEventData;
 import com.nordnetab.chcp.main.config.FetchUpdateOptions;
 import com.nordnetab.chcp.main.config.PluginInternalPreferences;
 import com.nordnetab.chcp.main.events.AssetsInstallationErrorEvent;
@@ -19,6 +20,7 @@ import com.nordnetab.chcp.main.events.BeforeInstallEvent;
 import com.nordnetab.chcp.main.events.NothingToInstallEvent;
 import com.nordnetab.chcp.main.events.NothingToUpdateEvent;
 import com.nordnetab.chcp.main.events.UpdateDownloadErrorEvent;
+import com.nordnetab.chcp.main.events.UpdateDownloadProgressEvent;
 import com.nordnetab.chcp.main.events.UpdateInstallationErrorEvent;
 import com.nordnetab.chcp.main.events.UpdateInstalledEvent;
 import com.nordnetab.chcp.main.events.UpdateIsReadyToInstallEvent;
@@ -752,6 +754,32 @@ public class HotCodePushPlugin extends CordovaPlugin {
     // endregion
 
     // region Update download events
+
+     /**
+     * Listener for the event that update download progress.
+     *
+     * @param event event information
+     * @see EventBus
+     * @see UpdateDownloadProgressEvent
+     * @see UpdatesLoader
+     */
+    @SuppressWarnings("unused")
+    @Subscribe
+    public void onEvent(UpdateDownloadProgressEvent event) {
+        final DownLoadEventData downLoadEventData = event.downLoadEventData();
+        Log.d("CHCP", "Update downloadpProgress: " + downLoadEventData.getDownloadProgress()+ '/' + downLoadEventData.getDownloadTotal());
+  
+        PluginResult jsResult = PluginResultHelper.pluginResultFromEvent(event);
+
+        // notify JS
+        if (downloadJsCallback != null) {
+            downloadJsCallback.sendPluginResult(jsResult);
+            downloadJsCallback = null;
+        }
+
+        sendMessageToDefaultCallback(jsResult);
+        //Log.d("D/CHCP", "onEvent: " + chcpXmlConfig.isAutoInstallIsAllowed() +' ' + newContentConfig.getUpdateTime());
+    }
 
     /**
      * Listener for the event that update is loaded and ready for the installation.

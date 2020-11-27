@@ -85,6 +85,10 @@ extern NSString *const kHCPEventUserInfoTaskDetailKey;
  */
 @interface HCPEvents : NSObject
 
+
+
++ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId;
+
 /**
  *  Create instance of the NSNotification.
  *  Object is then dispatched through the NSNotificationCenter.
@@ -109,6 +113,6 @@ extern NSString *const kHCPEventUserInfoTaskDetailKey;
  *
  *  @return instance of the NSNotification
  */
-+ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId;
++ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId taskDetail:(NSDictionary*)taskDetail;
 
 @end

@@ -29,8 +29,11 @@ NSString *const kHCPEventUserInfoApplicationConfigKey = @"appConfig";
 
 #pragma mark Public API
 
-+ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId {
++ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId{
     return [HCPEvents notificationWithName:name applicationConfig:appConfig taskId:taskId error:nil taskDetail:nil];
+}
++ (NSNotification *)notificationWithName:(NSString *)name applicationConfig:(HCPApplicationConfig *)appConfig taskId:(NSString *)taskId error:(NSError *)error{
+    return [HCPEvents notificationWithName:name applicationConfig:appConfig taskId:taskId error:error taskDetail:nil];
 }
 + (NSNotification *)notificationWithName:(NSString *)name taskId:(NSString *)taskId taskDetail:(NSMutableDictionary*)taskDetail {
     return [HCPEvents notificationWithName:name applicationConfig:nil taskId:taskId error:nil taskDetail:taskDetail];
